@@ -10,9 +10,15 @@
       --bg:#0b0b12; --card:#141424; --txt:#ffffff; --muted:#c9c9d6;
       --yes:#ff3b7a; --no:#2b2b3f;
     }
-    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+    *{
+      box-sizing:border-box;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    }
     body{
-      margin:0; min-height:100vh; display:grid; place-items:center;
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
       background:radial-gradient(1000px 520px at 50% 0%, #2a1b3d 0%, var(--bg) 60%);
       color:var(--txt);
     }
@@ -25,8 +31,15 @@
       box-shadow:0 20px 60px rgba(0,0,0,.45);
       text-align:center;
     }
-    h1{margin:8px 0 10px;font-size:28px;}
-    p{margin:0 0 14px;color:var(--muted);line-height:1.4;}
+    h1{
+      margin:8px 0 10px;
+      font-size:28px;
+    }
+    p{
+      margin:0 0 14px;
+      color:var(--muted);
+      line-height:1.4;
+    }
     .disclaimer{
       font-size:13px;
       opacity:.95;
@@ -60,19 +73,22 @@
       background:rgba(255,255,255,.04);
       border:1px dashed rgba(255,255,255,.10);
       overflow:hidden;
-      display:flex;align-items:center;justify-content:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       max-width: 520px;
       margin: 0 auto;
     }
 
     button{
-      border:0;border-radius:999px;
+      border:0;
+      border-radius:999px;
       padding:12px 18px;
       font-weight:800;
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color:transparent;
-      transition: transform .25s ease, filter .25s ease; /* transition pour l'effet scale */
+      transition: transform .25s ease, filter .25s ease;
     }
     button:active{transform:scale(.98);}
 
@@ -99,6 +115,8 @@
 
     <p id="sub">Tu peux dire oui… c’est plus simple 😄</p>
     <p class="disclaimer">
+      Petit disclaimer : le bouton “NON” qui bouge, c’est juste une blague.
+      Si ta réponse est non, dis‑le moi en vrai, sans pression ❤️
     </p>
 
     <div class="gallery">
@@ -128,7 +146,7 @@
     const sub = document.getElementById("sub");
     const question = document.getElementById("question");
 
-    // --- Bouton NON qui s'échappe (trend TikTok)
+    // --- Bouton NON qui s'échappe
     function placeNoCenter(){
       const r = stage.getBoundingClientRect();
       const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
@@ -155,16 +173,18 @@
     window.addEventListener("resize", placeNoCenter);
 
     noBtn.addEventListener("mouseenter", moveNo);
-    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNo(); }, { passive:false });
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNo();
+    }, { passive:false });
 
     // --- Bouton OUI qui grandit de plus en plus
     let yesScale = 1;
     yesBtn.addEventListener("mouseenter", () => {
-      yesScale = Math.min(2.2, yesScale + 0.12); // limite pour pas casser l'écran
+      yesScale = Math.min(2.2, yesScale + 0.12);
       yesBtn.style.transform = `scale(${yesScale})`;
     });
 
-    // Sur mobile, on peut le faire grandir au toucher aussi (avant le clic)
     yesBtn.addEventListener("touchstart", () => {
       yesScale = Math.min(2.2, yesScale + 0.10);
       yesBtn.style.transform = `scale(${yesScale})`;
