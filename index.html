@@ -40,11 +40,6 @@
       color:var(--muted);
       line-height:1.4;
     }
-    .disclaimer{
-      font-size:13px;
-      opacity:.95;
-      margin-top:-6px;
-    }
 
     .gallery{
       display:grid;
@@ -121,12 +116,6 @@
   <main class="card">
     <h1 id="question">Bibi, tu veux être mon amoureuse pour la Saint‑Valentin ?</h1>
 
-    <p id="sub">Tu peux dire oui… c’est plus simple 😄</p>
-    <p class="disclaimer">
-      Petit disclaimer : le bouton “NON” qui bouge, c’est juste une blague.
-      Si ta réponse est non, dis‑le moi en vrai, sans pression ❤️
-    </p>
-
     <div class="gallery">
       <img src="photo1.JPG" alt="Nous 1">
       <img src="photo2.JPG" alt="Nous 2">
@@ -153,7 +142,6 @@
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
     const result = document.getElementById("result");
-    const sub = document.getElementById("sub");
     const question = document.getElementById("question");
     const message = document.getElementById("message");
 
@@ -165,11 +153,9 @@
       const r = stage.getBoundingClientRect();
       const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
 
-      // OUI au centre gauche
       yesBtn.style.left = (r.width / 2 - bw - 20) + "px";
       yesBtn.style.top = (r.height / 2 - bh / 2) + "px";
 
-      // NON au centre droit
       noBtn.style.left = (r.width / 2 + 20) + "px";
       noBtn.style.top = (r.height / 2 - bh / 2) + "px";
     }
@@ -192,7 +178,6 @@
 
     noBtn.addEventListener("mouseenter", () => {
       noHoverCount++;
-
       if (noHoverCount < 10) {
         moveNo();
         yesScale = Math.min(3.5, yesScale + 0.25);
@@ -209,7 +194,6 @@
       }
     });
 
-    // Mobile
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       noHoverCount++;
@@ -232,11 +216,8 @@
     yesBtn.addEventListener("click", () => {
       stage.classList.add("hidden");
       result.classList.remove("hidden");
-      sub.textContent = "";
       question.textContent = "Bibi ❤️";
     });
   </script>
 </body>
 </html>
-
-
