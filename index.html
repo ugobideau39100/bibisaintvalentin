@@ -75,6 +75,7 @@
       display:flex;
       align-items:center;
       justify-content:center;
+      gap:20px; /* sépare bien les deux boutons au départ */
       max-width: 520px;
       margin: 0 auto;
     }
@@ -87,22 +88,21 @@
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color:transparent;
-      transition: transform .25s ease, filter .25s ease, opacity .8s ease, top .3s ease, left .3s ease;
+      transition: transform .25s ease, filter .25s ease, opacity .8s ease, top .4s ease, left .4s ease;
+      position:relative;
     }
-    button:active{transform:scale(.98);}
 
     #yes{
       background:var(--yes);
       color:#fff;
-      transform: scale(1);
       filter: drop-shadow(0 10px 22px rgba(255,59,122,.18));
-      z-index: 5;
+      z-index:2;
     }
+
     #no{
       background:var(--no);
       color:#fff;
-      position:absolute;
-      z-index: 2;
+      z-index:2;
     }
 
     .hidden{display:none;}
@@ -165,53 +165,48 @@
     let noHoverCount = 0;
     let yesScale = 1;
 
-    // Placement du NO au centre
-    function placeNoCenter(){
-      const r = stage.getBoundingClientRect();
-      const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
-      noBtn.style.left = (r.width/2 - bw/2) + "px";
-      noBtn.style.top  = (r.height/2 - bh/2) + "px";
-    }
-
-    // Mouvement aléatoire dans la zone
+    // Déplacement aléatoire du NON
     function moveNo(){
       const r = stage.getBoundingClientRect();
       const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
+      // limites pour éviter qu’il ne sorte trop tôt
       const pad = 10;
-
       const maxX = r.width - bw - pad;
       const maxY = r.height - bh - pad;
+
       const x = Math.floor(Math.random() * (maxX - pad + 1)) + pad;
       const y = Math.floor(Math.random() * (maxY - pad + 1)) + pad;
 
+      // utilise position absolue
+      noBtn.style.position = "absolute";
       noBtn.style.left = x + "px";
       noBtn.style.top  = y + "px";
     }
 
-    window.addEventListener("load", placeNoCenter);
-    window.addEventListener("resize", placeNoCenter);
-
-    // Interaction avec le NON
+    // Quand on survole le NON
     noBtn.addEventListener("mouseenter", () => {
       noHoverCount++;
 
       if (noHoverCount < 10) {
         moveNo();
-        // Le OUI grossit progressivement
+        // le OUI grossit à chaque fois
         yesScale = Math.min(3.5, yesScale + 0.25);
         yesBtn.style.transform = `scale(${yesScale})`;
       } else if (noHoverCount === 10) {
-        // 10ᵉ fois : le NON s'envole à droite et disparaît
-        noBtn.style.transition = "all 1.2s ease-in";
-        noBtn.style.left = "150%";
+        // 10ᵉ fois → il se barre à droite
+        const r = stage.getBoundingClientRect();
+        noBtn.style.position = "absolute";
+        noBtn.style.transition = "all 1.4s ease-in";
+        noBtn.style.left = (r.width + 200) + "px"; // hors de la zone
         noBtn.style.opacity = "0";
         setTimeout(() => {
           noBtn.remove();
           message.classList.add("show");
-        }, 1200);
+        }, 1400);
       }
     });
 
+    // Support tactile
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       noHoverCount++;
@@ -220,27 +215,18 @@
         yesScale = Math.min(3.5, yesScale + 0.25);
         yesBtn.style.transform = `scale(${yesScale})`;
       } else if (noHoverCount === 10) {
-        noBtn.style.transition = "all 1.2s ease-in";
-        noBtn.style.left = "150%";
+        const r = stage.getBoundingClientRect();
+        noBtn.style.transition = "all 1.4s ease-in";
+        noBtn.style.left = (r.width + 200) + "px";
         noBtn.style.opacity = "0";
         setTimeout(() => {
           noBtn.remove();
           message.classList.add("show");
-        }, 1200);
+        }, 1400);
       }
-    }, { passive: false });
+    }, { passive:false });
 
-    // Clic sur OUI
+    // Clique sur OUI
     yesBtn.addEventListener("click", () => {
-      stage.classList.add("hidden");
-      result.classList.remove("hidden");
-      sub.textContent = "";
-      question.textContent = "Bibi ❤️";
-    });
-  </script>
-</body>
-</html>
-
-</html>
-
+      stage.classList.add("hidde
 
