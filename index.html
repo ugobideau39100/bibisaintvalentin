@@ -107,6 +107,18 @@
 
     .hidden{display:none;}
     .big{font-size:34px;}
+
+    #message {
+      opacity: 0;
+      transition: opacity 1s ease;
+      margin-top: 12px;
+      color: var(--muted);
+      font-style: italic;
+      font-size: 15px;
+    }
+    #message.show {
+      opacity: 1;
+    }
   </style>
 </head>
 
@@ -132,6 +144,8 @@
       <button id="no">NON</button>
     </div>
 
+    <p id="message">Bon... il a fui 💨</p>
+
     <div id="result" class="hidden">
       <h1 class="big">YES ❤️</h1>
       <p>Bibi, merci… tu me rends trop heureux.</p>
@@ -146,11 +160,12 @@
     const result = document.getElementById("result");
     const sub = document.getElementById("sub");
     const question = document.getElementById("question");
+    const message = document.getElementById("message");
 
     let noHoverCount = 0;
     let yesScale = 1;
 
-    // Position initiale du bouton NON au centre
+    // Placement du NO au centre
     function placeNoCenter(){
       const r = stage.getBoundingClientRect();
       const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
@@ -158,15 +173,14 @@
       noBtn.style.top  = (r.height/2 - bh/2) + "px";
     }
 
-    // Déplacement aléatoire du NON — peut sortir du cadre
+    // Mouvement aléatoire dans la zone
     function moveNo(){
       const r = stage.getBoundingClientRect();
       const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
-      const pad = -40; // permet de sortir un peu du cadre
+      const pad = 10;
 
-      const maxX = r.width - bw + 80; // marge de liberté
-      const maxY = r.height - bh + 80;
-
+      const maxX = r.width - bw - pad;
+      const maxY = r.height - bh - pad;
       const x = Math.floor(Math.random() * (maxX - pad + 1)) + pad;
       const y = Math.floor(Math.random() * (maxY - pad + 1)) + pad;
 
@@ -177,47 +191,46 @@
     window.addEventListener("load", placeNoCenter);
     window.addEventListener("resize", placeNoCenter);
 
-    // Quand on approche du NON
+    // Interaction avec le NON
     noBtn.addEventListener("mouseenter", () => {
-      moveNo();
       noHoverCount++;
 
-      // Le OUI grossit progressivement
-      yesScale = Math.min(3.5, yesScale + 0.25);
-      yesBtn.style.transform = `scale(${yesScale})`;
-
-      // Après 10 essais, le NON s’enfuit définitivement (hors écran)
-      if(noHoverCount >= 10){
-        noBtn.style.transition = "all 1s ease";
-        noBtn.style.top = "-200px";
+      if (noHoverCount < 10) {
+        moveNo();
+        // Le OUI grossit progressivement
+        yesScale = Math.min(3.5, yesScale + 0.25);
+        yesBtn.style.transform = `scale(${yesScale})`;
+      } else if (noHoverCount === 10) {
+        // 10ᵉ fois : le NON s'envole à droite et disparaît
+        noBtn.style.transition = "all 1.2s ease-in";
         noBtn.style.left = "150%";
         noBtn.style.opacity = "0";
-        setTimeout(() => noBtn.remove(), 1200);
+        setTimeout(() => {
+          noBtn.remove();
+          message.classList.add("show");
+        }, 1200);
       }
     });
 
-    // Fonctionne aussi sur mobile
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
-      moveNo();
       noHoverCount++;
-      yesScale = Math.min(3.5, yesScale + 0.25);
-      yesBtn.style.transform = `scale(${yesScale})`;
-      if(noHoverCount >= 10){
-        noBtn.style.transition = "all 1s ease";
-        noBtn.style.top = "-200px";
+      if (noHoverCount < 10) {
+        moveNo();
+        yesScale = Math.min(3.5, yesScale + 0.25);
+        yesBtn.style.transform = `scale(${yesScale})`;
+      } else if (noHoverCount === 10) {
+        noBtn.style.transition = "all 1.2s ease-in";
         noBtn.style.left = "150%";
         noBtn.style.opacity = "0";
-        setTimeout(() => noBtn.remove(), 1200);
+        setTimeout(() => {
+          noBtn.remove();
+          message.classList.add("show");
+        }, 1200);
       }
-    }, { passive:false });
+    }, { passive: false });
 
-    // OUI réagit normalement
-    yesBtn.addEventListener("mouseenter", () => {
-      yesScale = Math.min(2.2, yesScale + 0.12);
-      yesBtn.style.transform = `scale(${yesScale})`;
-    });
-
+    // Clic sur OUI
     yesBtn.addEventListener("click", () => {
       stage.classList.add("hidden");
       result.classList.remove("hidden");
@@ -226,6 +239,8 @@
     });
   </script>
 </body>
+</html>
+
 </html>
 
 
