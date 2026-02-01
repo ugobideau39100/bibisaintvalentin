@@ -46,7 +46,6 @@
       margin-top:-6px;
     }
 
-    /* Galerie 2x2 */
     .gallery{
       display:grid;
       gap:12px;
@@ -88,7 +87,7 @@
       cursor:pointer;
       user-select:none;
       -webkit-tap-highlight-color:transparent;
-      transition: transform .25s ease, filter .25s ease;
+      transition: transform .25s ease, filter .25s ease, opacity .8s ease;
     }
     button:active{transform:scale(.98);}
 
@@ -156,6 +155,8 @@
     const sub = document.getElementById("sub");
     const question = document.getElementById("question");
 
+    let noHoverCount = 0; // compteur de tentatives
+
     // --- Bouton NON qui s'échappe
     function placeNoCenter(){
       const r = stage.getBoundingClientRect();
@@ -184,9 +185,17 @@
 
     noBtn.addEventListener("mouseenter", () => {
       moveNo();
-      // Le bouton OUI devient agressif
+      noHoverCount++;
+
+      // Effet agressif du bouton OUI
       yesBtn.style.animation = "wiggle 0.5s ease-in-out infinite";
       yesBtn.style.filter = "drop-shadow(0 0 25px rgba(255,59,122,0.6))";
+
+      // Après 10 tentatives, le bouton NON s'efface
+      if(noHoverCount >= 10){
+        noBtn.style.opacity = "0";
+        setTimeout(() => noBtn.remove(), 1000); // disparaît complètement
+      }
     });
 
     noBtn.addEventListener("mouseleave", () => {
@@ -198,9 +207,14 @@
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       moveNo();
+      noHoverCount++;
+      if(noHoverCount >= 10){
+        noBtn.style.opacity = "0";
+        setTimeout(() => noBtn.remove(), 1000);
+      }
     }, { passive:false });
 
-    // --- Bouton OUI qui grossit légèrement au survol
+    // --- Bouton OUI classique
     let yesScale = 1;
     yesBtn.addEventListener("mouseenter", () => {
       yesScale = Math.min(2.2, yesScale + 0.12);
@@ -222,4 +236,5 @@
   </script>
 </body>
 </html>
+
 
