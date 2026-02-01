@@ -97,33 +97,43 @@
       color:#fff;
       transform: scale(1);
       filter: drop-shadow(0 10px 22px rgba(255,59,122,.18));
+      z-index: 5;
     }
     #no{
       background:var(--no);
       color:#fff;
       position:absolute;
+      z-index: 2;
     }
 
     .hidden{display:none;}
     .big{font-size:34px;}
+
+    /* Animation de tremblement */
+    @keyframes wiggle {
+      0%, 100% { transform: scale(3.5) rotate(-2deg); }
+      25% { transform: scale(3.6) rotate(2deg); }
+      50% { transform: scale(3.4) rotate(-4deg); }
+      75% { transform: scale(3.6) rotate(3deg); }
+    }
   </style>
 </head>
 
 <body>
   <main class="card">
-    <h1 id="question">Bibi, tu veux être mon amoureuse pour la Saint‑Valentin ?</h1>
+    <h1 id="question">Bibi, tu veux être mon amoureuse pour la Saint‑Valentin ?</h1>
 
     <p id="sub">Tu peux dire oui… c’est plus simple 😄</p>
     <p class="disclaimer">
-      Petit disclaimer : le bouton “NON” qui bouge, c’est juste une blague.
+      Petit disclaimer : le bouton “NON” qui bouge, c’est juste une blague.
       Si ta réponse est non, dis‑le moi en vrai, sans pression ❤️
     </p>
 
     <div class="gallery">
-<img src="photo1.JPG" alt="Nous 1">
-<img src="photo2.JPG" alt="Nous 2">
-<img src="photo3.JPG" alt="Nous 3">
-<img src="photo4.jpeg" alt="Nous 4">
+      <img src="photo1.JPG" alt="Nous 1">
+      <img src="photo2.JPG" alt="Nous 2">
+      <img src="photo3.JPG" alt="Nous 3">
+      <img src="photo4.JPG" alt="Nous 4">
     </div>
 
     <div class="stage" id="stage">
@@ -172,13 +182,25 @@
     window.addEventListener("load", placeNoCenter);
     window.addEventListener("resize", placeNoCenter);
 
-    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("mouseenter", () => {
+      moveNo();
+      // Le bouton OUI devient agressif
+      yesBtn.style.animation = "wiggle 0.5s ease-in-out infinite";
+      yesBtn.style.filter = "drop-shadow(0 0 25px rgba(255,59,122,0.6))";
+    });
+
+    noBtn.addEventListener("mouseleave", () => {
+      yesBtn.style.animation = "none";
+      yesBtn.style.transform = "scale(1)";
+      yesBtn.style.filter = "drop-shadow(0 10px 22px rgba(255,59,122,.18))";
+    });
+
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       moveNo();
     }, { passive:false });
 
-    // --- Bouton OUI qui grandit de plus en plus
+    // --- Bouton OUI qui grossit légèrement au survol
     let yesScale = 1;
     yesBtn.addEventListener("mouseenter", () => {
       yesScale = Math.min(2.2, yesScale + 0.12);
@@ -190,6 +212,7 @@
       yesBtn.style.transform = `scale(${yesScale})`;
     }, { passive:true });
 
+    // --- Quand on clique sur OUI
     yesBtn.addEventListener("click", () => {
       stage.classList.add("hidden");
       result.classList.remove("hidden");
@@ -199,3 +222,4 @@
   </script>
 </body>
 </html>
+
